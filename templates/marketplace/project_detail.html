@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.title }} — 4work{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+    <!-- Breadcrumb -->
+    <a href="{% url 'marketplace:project_list' %}" class="text-xs text-gray-400 hover:text-gray-600 mb-6 inline-block">&larr; All projects</a>
+
+    <!-- Meta -->
+    <div class="flex items-center gap-2 mb-3">
+        {% if project.category %}
+            <span class="text-xs text-gray-500">{{ project.category.name }}</span>
+            <span class="text-gray-300">&middot;</span>
+        {% endif %}
+        <span class="text-xs font-medium px-2 py-0.5 rounded status-{{ project.status }}">{{ project.get_status_display }}</span>
+    </div>
+
+    <h1 class="text-3xl font-700 text-gray-900 mb-2">{{ project.title }}</h1>
+
+    <div class="flex items-center gap-4 text-sm text-gray-500 mb-8 pb-6 border-b border-gray-100">
+        <span>by {{ project.client.get_full_name|default:project.client.username }}</span>
+        <span class="text-indigo-600 font-600 text-base">${{ project.budget }}</span>
+        {% if project.deadline %}<span>Due {{ project.deadline|date:"M j, Y" }}</span>{% endif %}
+    </div>
+
+    {% if project.skills.all %}
+        <div class="mb-8">
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Required Skills</p>
+            <div class="flex flex-wrap gap-2">
+                {% for skill in project.skills.all %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700">
+                        {{ skill.name }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="prose prose-sm text-gray-700 leading-relaxed mb-8">
+        {{ project.description|linebreaks }}
+    </div>
+
+    {% if project.assigned_freelancer %}
+        <div class="border border-green-200 bg-green-50 rounded-md px-4 py-3 text-sm text-green-800 mb-6">
+            Assigned to {{ project.assigned_freelancer.get_full_name|default:project.assigned_freelancer.username }}
+        </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="flex gap-3">
+        {% if user == project.client %}
+            {% if project.status != 'completed' %}
+                <a href="{% url 'marketplace:project_update' project.pk %}" class="btn-primary">Edit</a>
+                <a href="{% url 'marketplace:project_delete' project.pk %}" class="btn-ghost text-red-600 border-red-200 hover:bg-red-50">Delete</a>
+            {% endif %}
+            {% if project.status == 'assigned' %}
+                <form method="post" action="{% url 'marketplace:project_complete' project.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-primary" style="background:#16a34a" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">Mark as completed</button>
+                </form>
+            {% endif %}
+        {% elif can_apply %}
+            <a href="{% url 'marketplace:application_create' project.pk %}" class="btn-primary">Apply now</a>
+        {% elif user.is_authenticated and user.role == 'freelancer' and has_applied %}
+            <span class="btn-ghost text-gray-400 cursor-default">Already applied</span>
+        {% endif %}
+    </div>
+</div>
+
+{% if applications %}
+    <div class="mt-12 max-w-2xl">
+        <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Applications ({{ applications|length }})</h2>
+        <div class="card divide-y divide-gray-100">
+            {% for application in applications %}
+                <div class="px-5 py-4">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ application.freelancer.get_full_name|default:application.freelancer.username }}</p>
+                            <p class="text-xs text-gray-400 mt-0.5">@{{ application.freelancer.username }} &middot; {{ application.proposed_timeline }} days</p>
+                        </div>
+                        <span class="text-xs font-medium px-2 py-0.5 rounded status-{{ application.status }}">{{ application.status|title }}</span>
+                    </div>
+
+                    {% if application.cover_letter %}
+                        <p class="text-sm text-gray-600 mt-3 leading-relaxed">{{ application.cover_letter|truncatewords:40 }}</p>
+                    {% endif %}
+
+                    {% if user == project.client and project.status == 'open' %}
+                        <div class="flex gap-2 mt-3">
+                            <form method="post" action="{% url 'marketplace:application_accept' application.pk %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-primary text-xs py-1 px-3">Accept</button>
+                            </form>
+                            <form method="post" action="{% url 'marketplace:application_reject' application.pk %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-ghost text-xs py-1 px-3 text-red-600 border-red-200 hover:bg-red-50">Reject</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

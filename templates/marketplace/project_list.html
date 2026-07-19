@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects — 4work{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <h1 class="text-2xl font-700 text-gray-900">Projects</h1>
+    {% if user.is_authenticated and user.role == 'client' %}
+        <a href="{% url 'marketplace:project_create' %}" class="btn-primary">Post project</a>
+    {% endif %}
+</div>
+
+<form method="get" class="flex flex-wrap gap-3 mb-8">
+    <input type="text" name="search" value="{{ search_query }}" placeholder="Search…"
+           class="input-base max-w-xs">
+    <select name="category" class="input-base max-w-xs">
+        <option value="">All categories</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id|stringformat:'s' == selected_category %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <select name="skill" class="input-base max-w-xs">
+        <option value="">All skills</option>
+        {% for skill in skills %}
+            <option value="{{ skill.id }}" {% if skill.id|stringformat:'s' == selected_skill %}selected{% endif %}>
+                {{ skill.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn-ghost">Filter</button>
+    {% if search_query or selected_category or selected_skill %}
+        <a href="{% url 'marketplace:project_list' %}" class="btn-ghost">Clear</a>
+    {% endif %}
+</form>
+
+{% if projects %}
+    <div class="card divide-y divide-gray-100">
+        {% for project in projects %}
+            <div class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
+                <div class="min-w-0 flex-1">
+                    <a href="{{ project.get_absolute_url }}" class="text-sm font-medium text-gray-900 hover:text-indigo-600">{{ project.title }}</a>
+                    {% if project.description %}<p class="text-xs text-gray-500 mt-0.5 truncate">{{ project.description }}</p>{% endif %}
+                    <div class="flex items-center gap-3 mt-0.5">
+                        {% if project.category %}
+                            <span class="text-xs text-gray-400">{{ project.category.name }}</span>
+                        {% endif %}
+                        <span class="text-xs text-gray-400">${{ project.budget }}</span>
+                        <span class="text-xs text-gray-400">{{ project.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                <span class="ml-6 text-xs font-medium px-2 py-0.5 rounded status-{{ project.status }} whitespace-nowrap">{{ project.get_status_display }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <div class="flex items-center gap-2 mt-6 text-sm">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" class="btn-ghost">Previous</a>
+            {% endif %}
+            <span class="text-gray-400 text-xs">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" class="btn-ghost">Next</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="card px-5 py-12 text-center">
+        <p class="text-sm text-gray-500">No projects found. Try adjusting your filters.</p>
+    </div>
+{% endif %}
+{% endblock %}

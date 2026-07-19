@@ -1,0 +1,29 @@
+[run]
+source = accounts, marketplace, config
+omit =
+    */migrations/*
+    */tests/*
+    */__init__.py
+    manage.py
+    config/wsgi.py
+    config/asgi.py
+    config/urls.py
+    config/views.py
+
+[report]
+show_missing = True
+skip_covered = False
+precision = 1
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+[html]
+directory = htmlcov
+
+[xml]
+output = coverage.xml
+
+[pytest]
+addopts = --cov --cov-config=.coveragerc --cov-report=term-missing --cov-fail-under=80

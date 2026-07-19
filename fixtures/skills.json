@@ -1,0 +1,202 @@
+[
+  {
+    "model": "accounts.skill",
+    "pk": 1,
+    "fields": {
+      "name": "Python",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 2,
+    "fields": {
+      "name": "JavaScript",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 3,
+    "fields": {
+      "name": "React",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 4,
+    "fields": {
+      "name": "Node.js",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 5,
+    "fields": {
+      "name": "Django",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 6,
+    "fields": {
+      "name": "Flask",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 7,
+    "fields": {
+      "name": "TypeScript",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 8,
+    "fields": {
+      "name": "Vue.js",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 9,
+    "fields": {
+      "name": "Angular",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 10,
+    "fields": {
+      "name": "Swift",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 11,
+    "fields": {
+      "name": "Kotlin",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 12,
+    "fields": {
+      "name": "Flutter",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 13,
+    "fields": {
+      "name": "React Native",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 14,
+    "fields": {
+      "name": "HTML/CSS",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 15,
+    "fields": {
+      "name": "SQL",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 16,
+    "fields": {
+      "name": "MongoDB",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 17,
+    "fields": {
+      "name": "PostgreSQL",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 18,
+    "fields": {
+      "name": "Docker",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 19,
+    "fields": {
+      "name": "Kubernetes",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 20,
+    "fields": {
+      "name": "AWS",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 21,
+    "fields": {
+      "name": "Git",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 22,
+    "fields": {
+      "name": "Figma",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 23,
+    "fields": {
+      "name": "Adobe Photoshop",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 24,
+    "fields": {
+      "name": "SEO",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  },
+  {
+    "model": "accounts.skill",
+    "pk": 25,
+    "fields": {
+      "name": "Content Writing",
+      "created_at": "2026-02-27T00:00:00Z"
+    }
+  }
+]

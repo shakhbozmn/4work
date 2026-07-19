@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Skills - 4work{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Browse Skills</h1>
+      <p class="mt-2 text-gray-600">Find freelancers by their skills and expertise</p>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-8">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <input type="text" 
+               id="skill-search"
+               placeholder="Search skills..." 
+               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+      </div>
+    </div>
+
+    <!-- Skills Grid -->
+    {% if skills %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="skills-grid">
+        {% for skill in skills %}
+          <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 skill-card" data-skill="{{ skill.name|lower }}">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-indigo-100 rounded-full">
+                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span class="text-sm text-gray-500">{{ skill.profiles.count }} freelancers</span>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ skill.name }}</h3>
+            <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+              Open projects that need this skill.
+            </p>
+            <a href="{% url 'marketplace:project_list' %}?skill={{ skill.id }}"
+               class="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-900">
+              View projects
+              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No skills found</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by adding some skills to the platform.</p>
+      </div>
+    {% endif %}
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+      {% include 'components/pagination.html' %}
+    {% endif %}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('skill-search');
+  const skillCards = document.querySelectorAll('.skill-card');
+
+  searchInput.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    skillCards.forEach(card => {
+      const skillName = card.getAttribute('data-skill');
+      if (skillName.includes(searchTerm)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

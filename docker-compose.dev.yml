@@ -1,0 +1,46 @@
+services:
+  db:
+    env_file:
+      - .env
+    image: postgres:15-alpine
+    container_name: 4work_postgres_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME:-4work_dev_db}
+      POSTGRES_USER: ${DB_USER:-4work_dev_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-devpassword}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-4work_dev_user} -d ${DB_NAME:-4work_dev_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: 4work_redis_dev
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: 4work_django_dev
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:

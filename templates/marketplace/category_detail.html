@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} — 4work{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <div class="flex flex-col items-start gap-2 ">
+        <a href="{% url 'marketplace:category_list' %}" class="text-sm text-gray-400 hover:text-indigo-600">&larr; All categories</a>
+        <div>
+            <h1 class="text-2xl font-700 text-gray-900">{{ category.name }}</h1>
+            {% if category.description %}
+                <p class="text-sm text-gray-500 mt-0.5">{{ category.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if projects %}
+    <div class="card divide-y divide-gray-100">
+        {% for project in projects %}
+            <div class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
+                <div class="min-w-0 flex-1">
+                    <a href="{{ project.get_absolute_url }}" class="text-sm font-medium text-gray-900 hover:text-indigo-600">{{ project.title }}</a>
+                    {% if project.description %}<p class="text-xs text-gray-500 mt-0.5 truncate">{{ project.description }}</p>{% endif %}
+                    <div class="flex items-center gap-3 mt-0.5">
+                        {% if project.category %}
+                            <span class="text-xs text-gray-400">{{ project.category.name }}</span>
+                        {% endif %}
+                        <span class="text-xs text-gray-400">${{ project.budget }}</span>
+                        <span class="text-xs text-gray-400">{{ project.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                <span class="ml-6 text-xs font-medium px-2 py-0.5 rounded status-{{ project.status }} whitespace-nowrap">{{ project.get_status_display }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <div class="flex items-center gap-2 mt-6 text-sm">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn-ghost">Previous</a>
+            {% endif %}
+            <span class="text-gray-400 text-xs">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn-ghost">Next</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="card px-5 py-12 text-center">
+        <p class="text-sm text-gray-500">No projects in this category yet.</p>
+    </div>
+{% endif %}
+{% endblock %}

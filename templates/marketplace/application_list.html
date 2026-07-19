@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Applications — 4work{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-700 text-gray-900">
+            {% if project %}
+                Applications for {{ project.title }}
+            {% elif user.role == 'client' %}
+                Received Applications
+            {% else %}
+                My Applications
+            {% endif %}
+        </h1>
+        <p class="text-sm text-gray-500 mt-0.5">
+            {% if project %}
+                Review and manage applications for this project
+            {% elif user.role == 'client' %}
+                Review applications from freelancers interested in your projects
+            {% else %}
+                Track the status of your project applications
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<form method="get" class="flex flex-wrap gap-3 mb-8">
+    {% if project %}
+        <input type="hidden" name="project" value="{{ project.id }}">
+    {% endif %}
+    <select name="status" class="input-base max-w-xs">
+        <option value="">All statuses</option>
+        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="accepted" {% if request.GET.status == 'accepted' %}selected{% endif %}>Accepted</option>
+        <option value="rejected" {% if request.GET.status == 'rejected' %}selected{% endif %}>Rejected</option>
+    </select>
+    {% if user.role == 'client' %}
+        <select name="project" class="input-base max-w-xs">
+            <option value="">All projects</option>
+            {% for proj in user_projects %}
+                <option value="{{ proj.id }}" {% if request.GET.project == proj.id|stringformat:"s" %}selected{% endif %}>
+                    {{ proj.title }}
+                </option>
+            {% endfor %}
+        </select>
+    {% endif %}
+    <button type="submit" class="btn-ghost">Filter</button>
+    {% if request.GET %}
+        <a href="{% url 'marketplace:application_list' %}" class="btn-ghost">Clear</a>
+    {% endif %}
+</form>
+
+{% if applications %}
+    <div class="card divide-y divide-gray-100">
+        {% for application in applications %}
+            <div class="flex items-start justify-between px-5 py-4 hover:bg-gray-50 transition">
+                <div class="min-w-0 flex-1">
+                    {% if user.role == 'client' %}
+                        <a href="{% url 'accounts:profile_detail' application.freelancer.username %}"
+                           class="text-sm font-medium text-gray-900 hover:text-indigo-600">
+                            {{ application.freelancer.get_full_name|default:application.freelancer.username }}
+                        </a>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            @{{ application.freelancer.username }} &middot; {{ application.proposed_timeline }} days &middot; {{ application.created_at|date:"M d, Y" }}
+                        </p>
+                        {% if application.freelancer.profile.skills.all %}
+                            <div class="mt-2">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Skills</p>
+                                <div class="flex flex-wrap gap-1">
+                                    {% for skill in application.freelancer.profile.skills.all %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700">
+                                            {{ skill.name }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'marketplace:project_detail' application.project.id %}"
+                           class="text-sm font-medium text-gray-900 hover:text-indigo-600">
+                            {{ application.project.title }}
+                        </a>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            by {{ application.project.client.username }} &middot; {{ application.proposed_timeline }} days &middot; {{ application.created_at|date:"M d, Y" }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="ml-6 flex items-center gap-3 shrink-0">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded status-{{ application.status }}">
+                        {{ application.get_status_display }}
+                    </span>
+                    <a href="{% url 'marketplace:project_detail' application.project.id %}"
+                       class="text-xs text-indigo-600 hover:underline">View</a>
+                    {% if user.role == 'client' and application.status == 'pending' and application.project.status == 'open' %}
+                        <form method="post" action="{% url 'marketplace:application_accept' application.id %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary text-xs py-1 px-3">Accept</button>
+                        </form>
+                        <form method="post" action="{% url 'marketplace:application_reject' application.id %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-ghost text-xs py-1 px-3 text-red-600 border-red-200 hover:bg-red-50">Reject</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <div class="flex items-center gap-2 mt-6 text-sm">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.project %}&project={{ request.GET.project }}{% endif %}" class="btn-ghost">Previous</a>
+            {% endif %}
+            <span class="text-gray-400 text-xs">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.project %}&project={{ request.GET.project }}{% endif %}" class="btn-ghost">Next</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="card px-5 py-12 text-center">
+        <p class="text-sm text-gray-500 mb-4">
+            {% if user.role == 'client' %}
+                No applications have been submitted to your projects yet.
+            {% else %}
+                You haven't applied to any projects yet.
+            {% endif %}
+        </p>
+        <a href="{% url 'marketplace:project_list' %}" class="btn-primary">Browse Projects</a>
+    </div>
+{% endif %}
+{% endblock %}

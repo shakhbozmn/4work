@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign in — 4work{% endblock %}
+
+{% block content %}
+<div class="max-w-sm mx-auto pt-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-700 text-gray-900">Sign in</h1>
+        <p class="text-sm text-gray-500 mt-1">Don't have an account? <a href="{% url 'accounts:register' %}" class="text-indigo-600 hover:underline">Get started</a></p>
+    </div>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="bg-red-50 border border-red-200 rounded-md px-4 py-3 text-sm text-red-800">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="input-base" required>
+            {% if form.username.errors %}<p class="mt-1 text-xs text-red-600">{{ form.username.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="input-base" required>
+            {% if form.password.errors %}<p class="mt-1 text-xs text-red-600">{{ form.password.errors.0 }}</p>{% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary w-full mt-2">Sign in</button>
+    </form>
+</div>
+{% endblock %}

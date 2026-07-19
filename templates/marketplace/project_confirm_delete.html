@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Project — 4work{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto">
+    <h1 class="text-2xl font-700 text-gray-900 mb-6">Delete Project</h1>
+
+    <div class="card px-5 py-4 mb-4">
+        <p class="text-sm font-medium text-gray-900">{{ project.title }}</p>
+        {% if project.description %}
+            <p class="text-xs text-gray-500 mt-0.5">{{ project.description|truncatewords:20 }}</p>
+        {% endif %}
+        <p class="text-xs text-gray-400 mt-1">${{ project.budget }}</p>
+    </div>
+
+    <div class="px-4 py-3 rounded-md text-sm border bg-red-50 text-red-700 border-red-200 mb-6">
+        This action cannot be undone. The project and all its applications will be permanently deleted.
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex gap-3">
+            <button type="submit"
+                    class="btn-primary"
+                    style="background:#dc2626"
+                    onmouseover="this.style.background='#b91c1c'"
+                    onmouseout="this.style.background='#dc2626'">
+                Delete Project
+            </button>
+            <a href="{% url 'marketplace:project_detail' project.pk %}" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

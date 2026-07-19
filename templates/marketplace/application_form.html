@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply — {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-lg">
+    <a href="{{ project.get_absolute_url }}" class="text-xs text-gray-400 hover:text-gray-600 mb-6 inline-block">&larr; {{ project.title }}</a>
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-700 text-gray-900">Apply to project</h1>
+        <div class="flex items-center gap-3 mt-1 text-sm text-gray-500">
+            <span>${{ project.budget }} budget</span>
+        </div>
+    </div>
+
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.cover_letter.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Cover letter</label>
+            <textarea name="{{ form.cover_letter.name }}" id="{{ form.cover_letter.id_for_label }}" rows="6" class="input-base"
+                      placeholder="Tell the client why you're the best fit…"
+                      required>{{ form.cover_letter.value|default:'' }}</textarea>
+            {% if form.cover_letter.errors %}<p class="mt-1 text-xs text-red-600">{{ form.cover_letter.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.proposed_timeline.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Estimated timeline (days)</label>
+            <input type="number" name="{{ form.proposed_timeline.name }}" id="{{ form.proposed_timeline.id_for_label }}" value="{{ form.proposed_timeline.value|default:'' }}" class="input-base" placeholder="e.g. 14" required>
+            {% if form.proposed_timeline.errors %}<p class="mt-1 text-xs text-red-600">{{ form.proposed_timeline.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.proposed_budget.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Proposed budget (USD, optional)</label>
+            <input type="number" name="{{ form.proposed_budget.name }}" id="{{ form.proposed_budget.id_for_label }}" value="{{ form.proposed_budget.value|default:'' }}" step="0.01" min="0" class="input-base" placeholder="e.g. 1200.00">
+            {% if form.proposed_budget.errors %}<p class="mt-1 text-xs text-red-600">{{ form.proposed_budget.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div class="flex gap-3 pt-2">
+            <button type="submit" class="btn-primary">Submit application</button>
+            <a href="{{ project.get_absolute_url }}" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

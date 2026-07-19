@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} — 4work{% endblock %}
+
+{% block content %}
+
+<div class="animate-fade-in">
+    <div class="mb-7 animate-fade-in-1">
+        <div class="flex items-center gap-2 mb-1 hover:text-indigo-600 transition-colors duration-150">
+            <a href="{% url 'marketplace:project_list' %}" class="flex items-center gap-2 mb-1 text-gray-400 hover:text-indigo-600 transition-colors duration-150">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Projects
+            </a>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 font-display">{{ title }}</h1>
+        <p class="text-sm text-gray-500 mt-1">Fill in the details below to {% if project %}update your{% else %}post a new{% endif %} project.</p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex-1 min-w-0">
+            <form method="post" id="project-form" novalidate>
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 animate-fade-in-2">
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold text-gray-800 mb-1.5">
+                            Project Title <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">A concise, descriptive title that helps freelancers understand your project at a glance.</p>
+                        <div class="relative">
+                            <svg class="field-icon absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 transition-colors duration-150" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                            <input
+                                type="text"
+                                name="{{ form.title.name }}"
+                                id="{{ form.title.id_for_label }}"
+                                value="{{ form.title.value|default:'' }}"
+                                class="input-base pl-10{% if form.title.errors %} border-red-300 bg-red-50{% endif %}"
+                                placeholder="e.g. Build a marketing site for a SaaS launch"
+                                maxlength="255"
+                                required>
+                        </div>
+                        {% if form.title.errors %}
+                        <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            {{ form.title.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 animate-fade-in-3">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="{{ form.description.id_for_label }}" class="block text-sm font-semibold text-gray-800">
+                                Description <span class="text-red-500">*</span>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">Describe your project requirements, deliverables, and any relevant context. More detail attracts better applicants.</p>
+                        <div class="relative">
+                            <svg class="field-icon-top absolute left-3 top-3 pointer-events-none text-gray-400 transition-colors duration-150" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <textarea
+                                name="{{ form.description.name }}"
+                                id="{{ form.description.id_for_label }}"
+                                rows="6"
+                                class="input-base pl-10 pt-2.5 resize-y{% if form.description.errors %} border-red-300 bg-red-50{% endif %}"
+                                placeholder="Describe what you need done, your expectations, any technical requirements…"
+                                required>{{ form.description.value|default:'' }}</textarea>
+                        </div>
+                        {% if form.description.errors %}
+                        <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            {{ form.description.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 animate-fade-in-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="{{ form.budget.id_for_label }}" class="block text-sm font-semibold text-gray-800 mb-1.5">
+                                    Budget <span class="text-red-500">*</span>
+                                </label>
+                                <p class="text-xs text-gray-500 mb-2">Set a realistic budget for your project.</p>
+                                <div class="relative flex items-center">
+                                    <span class="absolute left-0 top-0 bottom-0 flex items-center justify-center min-w-[2.5rem] px-3 bg-gray-50 border border-gray-200 border-r-0 rounded-l-md text-sm font-medium text-gray-500 z-10 pointer-events-none">$</span>
+                                    <input
+                                        type="number"
+                                        name="{{ form.budget.name }}"
+                                        id="{{ form.budget.id_for_label }}"
+                                        value="{{ form.budget.value|default:'' }}"
+                                        step="0.01" min="1"
+                                        class="input-base pl-11 ml-10 rounded-l-none{% if form.budget.errors %} border-red-300 bg-red-50{% endif %}"
+                                        placeholder="1500.00"
+                                        required>
+                                </div>
+                                {% if form.budget.errors %}
+                                <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                    {{ form.budget.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label for="{{ form.deadline.id_for_label }}" class="block text-sm font-semibold text-gray-800 mb-1.5">Deadline</label>
+                                <p class="text-xs text-gray-500 mb-2">Optional — when do you need this done?</p>
+                                <div class="relative">
+                                    <svg class="field-icon absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 transition-colors duration-150" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    <input
+                                        type="text"
+                                        name="{{ form.deadline.name }}"
+                                        id="{{ form.deadline.id_for_label }}"
+                                        value="{% if form.deadline.value %}{{ form.deadline.value|date:'Y-m-d' }}{% endif %}"
+                                        placeholder="Pick a date…"
+                                        autocomplete="off"
+                                        class="input-base pl-10 fp-deadline{% if form.deadline.errors %} border-red-300 bg-red-50{% endif %}">
+                                </div>
+                                {% if form.deadline.errors %}
+                                <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                    {{ form.deadline.errors.0 }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 animate-fade-in-5">
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-semibold text-gray-800 mb-1.5">
+                            Category <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Categorising your project helps the right freelancers find it.</p>
+                        <div class="relative">
+                            <svg class="field-icon absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 transition-colors duration-150" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h8m-8 6h16"/></svg>
+                            <select
+                                name="{{ form.category.name }}"
+                                id="{{ form.category.id_for_label }}"
+                                class="input-base pl-10 pr-10 appearance-none{% if form.category.errors %} border-red-300 bg-red-50{% endif %}"
+                                required>
+                                <option value="">Choose a category…</option>
+                                {% for category in form.category.field.queryset.all %}
+                                    <option value="{{ category.id }}" {% if form.instance.pk and form.instance.category.id == category.id %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        {% if form.category.errors %}
+                        <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            {{ form.category.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 animate-fade-in-6">
+                        <label class="block text-sm font-semibold text-gray-800 mb-1.5">
+                            Required Skills
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Select the skills required for this project to help attract the right freelancers.</p>
+                        <div class="space-y-2">
+                            {% for skill in form.skills.field.queryset.all %}
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        name="{{ form.skills.name }}"
+                                        value="{{ skill.id }}"
+                                        {% if form.instance.pk %}{% if skill in form.instance.skills.all %}checked{% endif %}{% endif %}
+                                        class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                    <span class="text-sm text-gray-700">{{ skill.name }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 mt-6">
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold transition-all duration-200 hover:bg-indigo-700 hover:-translate-y-px hover:shadow-lg hover:shadow-indigo-200/60 active:translate-y-0 active:shadow-sm cursor-pointer border-0">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        {{ action }} Project
+                    </button>
+                    {% if project %}
+                        <a href="{% url 'marketplace:project_detail' project.pk %}" class="inline-flex items-center justify-center px-5 py-2.5 text-gray-700 border border-gray-200 rounded-lg text-sm font-medium no-underline bg-white transition-all duration-150 hover:bg-gray-50 hover:border-gray-300">Discard changes</a>
+                    {% else %}
+                        <a href="{% url 'marketplace:project_list' %}" class="inline-flex items-center justify-center px-5 py-2.5 text-gray-700 border border-gray-200 rounded-lg text-sm font-medium no-underline bg-white transition-all duration-150 hover:bg-gray-50 hover:border-gray-300">Cancel</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        <aside class="lg:w-56 shrink-0 space-y-4 animate-fade-in-3">
+            <div class="bg-violet-50 border border-violet-200 rounded-xl p-4">
+                <h3 class="font-display text-[0.7rem] font-semibold text-indigo-600 uppercase tracking-widest mb-2">Writing tips</h3>
+                <div class="flex items-start gap-2 text-[0.8rem] text-slate-600 leading-relaxed py-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-300 mt-1.5 shrink-0"></span>
+                    Use a clear, specific title so freelancers can immediately grasp the scope.
+                </div>
+                <div class="flex items-start gap-2 text-[0.8rem] text-slate-600 leading-relaxed py-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-300 mt-1.5 shrink-0"></span>
+                    List concrete deliverables in your description.
+                </div>
+                <div class="flex items-start gap-2 text-[0.8rem] text-slate-600 leading-relaxed py-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-300 mt-1.5 shrink-0"></span>
+                    A realistic budget attracts higher-quality proposals.
+                </div>
+            </div>
+            {% if not project %}
+            <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                <h3 class="font-display text-[0.7rem] font-semibold text-green-700 uppercase tracking-widest mb-2">After posting</h3>
+                <div class="flex items-start gap-2 text-[0.8rem] text-green-800 leading-relaxed py-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 shrink-0"></span>
+                    Review applications from the dashboard.
+                </div>
+                <div class="flex items-start gap-2 text-[0.8rem] text-green-800 leading-relaxed py-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 shrink-0"></span>
+                    You can edit or close the project at any time.
+                </div>
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    flatpickr('.fp-deadline', {
+        dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'F j, Y',
+        altInputClass: 'input-base pl-10',
+        minDate: 'today',
+        disableMobile: true,
+        allowInput: false,
+    });
+</script>
+{% endblock %}
+    

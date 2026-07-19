@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }} — 4work{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+    <!-- Header -->
+    <div class="flex items-center gap-5 mb-8">
+        {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}" class="w-16 h-16 rounded-full object-cover">
+        {% else %}
+            <div class="w-16 h-16 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0">
+                <span class="text-xl font-700 text-indigo-500">{{ profile_user.username|first|upper }}</span>
+            </div>
+        {% endif %}
+        <div>
+            <h1 class="text-2xl font-700 text-gray-900">{{ profile_user.get_full_name|default:profile_user.username }}</h1>
+            <div class="flex items-center gap-2 mt-1 text-sm">
+                <span class="text-gray-400">@{{ profile_user.username }}</span>
+                <span class="text-gray-200">&middot;</span>
+                <span class="text-gray-500">{{ profile_user.role|title }}</span>
+                {% if profile_user.role == 'freelancer' and profile.hourly_rate %}
+                    <span class="text-gray-200">&middot;</span>
+                    <span class="text-gray-500">${{ profile.hourly_rate }}/hr</span>
+                {% endif %}
+                {% if profile_user.role == 'client' and profile.company_name %}
+                    <span class="text-gray-200">&middot;</span>
+                    <span class="text-gray-500">{{ profile.company_name }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% if profile_user == request.user %}
+            <a href="{% url 'accounts:profile_update' %}" class="btn-ghost ml-auto text-xs">Edit profile</a>
+        {% endif %}
+    </div>
+
+    {% if profile.bio %}
+        <div class="mb-6">
+            <p class="text-sm text-gray-600 leading-relaxed">{{ profile.bio }}</p>
+        </div>
+    {% endif %}
+
+    {% if profile_user.role == 'freelancer' and profile.skills.all %}
+        <div class="mb-8">
+            <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Skills</p>
+            <p class="text-sm text-gray-700">{% for skill in profile.skills.all %}{{ skill.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        </div>
+    {% endif %}
+
+    <div class="flex gap-8 pt-6 border-t border-gray-100">
+        {% if profile_user.role == 'client' %}
+        <div>
+            <p class="text-2xl font-700 text-gray-900">{{ profile_user.projects.count }}</p>
+            <p class="text-xs text-gray-400 mt-0.5">Projects posted</p>
+        </div>
+        {% endif %}
+        {% if profile_user.role == 'freelancer' %}
+        <div>
+            <p class="text-2xl font-700 text-gray-900">{{ profile_user.applications.count }}</p>
+            <p class="text-xs text-gray-400 mt-0.5">Applications made</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+   

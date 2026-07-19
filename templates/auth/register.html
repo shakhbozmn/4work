@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Create account — 4work{% endblock %}
+
+{% block content %}
+<div class="max-w-sm mx-auto pt-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-700 text-gray-900">Create account</h1>
+        <p class="text-sm text-gray-500 mt-1">Already have an account? <a href="{% url 'accounts:login' %}" class="text-indigo-600 hover:underline">Sign in</a></p>
+    </div>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="input-base" required>
+            {% if form.username.errors %}<p class="mt-1 text-xs text-red-600">{{ form.username.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="input-base" required>
+            {% if form.email.errors %}<p class="mt-1 text-xs text-red-600">{{ form.email.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.role.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">I want to</label>
+            <select name="{{ form.role.name }}" id="{{ form.role.id_for_label }}" class="input-base" required>
+                <option value="client">Hire freelancers (Client)</option>
+                <option value="freelancer">Find work (Freelancer)</option>
+            </select>
+            {% if form.role.errors %}<p class="mt-1 text-xs text-red-600">{{ form.role.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" class="input-base" required>
+            {% if form.password1.errors %}<p class="mt-1 text-xs text-red-600">{{ form.password1.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">Confirm password</label>
+            <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" class="input-base" required>
+            {% if form.password2.errors %}<p class="mt-1 text-xs text-red-600">{{ form.password2.errors.0 }}</p>{% endif %}
+        </div>
+
+        <button type="submit" class="btn-primary w-full mt-2">Create account</button>
+    </form>
+</div>
+{% endblock %}

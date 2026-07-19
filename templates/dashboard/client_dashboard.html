@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard — 4work{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-700 text-gray-900">Dashboard</h1>
+        <p class="text-sm text-gray-500 mt-0.5">{{ user.username }} &middot; Client</p>
+    </div>
+    <a href="{% url 'marketplace:project_create' %}" class="btn-primary">Post project</a>
+</div>
+
+<div class="grid grid-cols-4 gap-px bg-gray-100 border border-gray-200 rounded-lg overflow-hidden mb-10">
+    <div class="bg-white px-5 py-4">
+        <p class="text-xs text-gray-400 uppercase tracking-wide">Projects</p>
+        <p class="text-2xl font-700 text-gray-900 mt-1">{{ stats.total_projects }}</p>
+    </div>
+    <div class="bg-white px-5 py-4">
+        <p class="text-xs text-gray-400 uppercase tracking-wide">Active</p>
+        <p class="text-2xl font-700 text-gray-900 mt-1">{{ stats.active_projects }}</p>
+    </div>
+    <div class="bg-white px-5 py-4">
+        <p class="text-xs text-gray-400 uppercase tracking-wide">Pending</p>
+        <p class="text-2xl font-700 text-gray-900 mt-1">{{ stats.pending_applications }}</p>
+    </div>
+    <div class="bg-white px-5 py-4">
+        <p class="text-xs text-gray-400 uppercase tracking-wide">Spent</p>
+        <p class="text-2xl font-700 text-gray-900 mt-1">${{ stats.total_spent }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div>
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wide">My projects</h2>
+            <a href="{% url 'marketplace:project_list' %}" class="text-xs text-indigo-600 hover:underline mt-2 inline-block">View all &rarr;</a>
+        </div>
+        {% if recent_projects %}
+            <div class="card divide-y divide-gray-100">
+                {% for project in recent_projects %}
+                    <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition">
+                        <div class="min-w-0 flex-1">
+                            <a href="{% url 'marketplace:project_detail' project.id %}" class="text-sm font-medium text-gray-900 hover:text-indigo-600 truncate block">{{ project.title }}</a>
+                            <span class="text-xs text-gray-400">${{ project.budget }}</span>
+                        </div>
+                        <span class="ml-4 text-xs font-medium px-2 py-0.5 rounded status-{{ project.status }}">{{ project.get_status_display }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card px-4 py-8 text-center">
+                <p class="text-sm text-gray-500 mb-3">No projects yet.</p>
+                <a href="{% url 'marketplace:project_create' %}" class="btn-primary text-xs">Post your first project</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-medium text-gray-500 uppercase tracking-wide ">Recent applications</h2>
+            <a href="{% url 'marketplace:application_list' %}" class="text-xs text-indigo-600 hover:underline mt-2 inline-block">View all &rarr;</a>
+        </div>
+        {% if recent_applications %}
+            <div class="card divide-y divide-gray-100">
+                {% for application in recent_applications %}
+                    <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium text-gray-900 truncate">{{ application.project.title }}</p>
+                            <p class="text-xs text-gray-400">{{ application.freelancer.username }} &middot; {{ application.proposed_timeline }} days</p>
+                        </div>
+                        <span class="ml-4 text-xs font-medium px-2 py-0.5 rounded status-{{ application.status }}">{{ application.get_status_display }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card px-4 py-8 text-center">
+                <p class="text-sm text-gray-500">No applications received yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

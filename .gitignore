@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Environment Variables (NEVER commit secrets!)
+.env
+.env.local
+.env.production
+!.env.example
+!.env.production.example
+
+# Database files
+db.sqlite3
+*.db
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Media and static (collected)
+/staticfiles/
+/media/
+
+# Logs
+*.log
+
+# Testing + coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Tooling caches
+.vexp/
+.claude/

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}4work — Freelance Marketplace{% endblock %}
+
+{% block main_class %}flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6{% endblock %}
+
+{% block content %}
+<style>
+  @keyframes blink {
+
+    0%,
+    100% {
+      opacity: 1
+    }
+
+    50% {
+      opacity: 0
+    }
+  }
+
+  .cursor {
+    animation: blink 1s step-start infinite;
+  }
+</style>
+
+<div class="min-h-[calc(100vh-128px)] flex flex-col items-center justify-center text-center px-4">
+
+  <p class="animate-fade-in text-xs font-medium tracking-widest text-indigo-500 uppercase mb-5">
+    Freelance Marketplace
+  </p>
+
+  <h1 class="animate-fade-in-1 text-5xl sm:text-6xl leading-[1.1] font-700 text-gray-900 mb-6">
+    Hire for&nbsp;<span id="typeword" class="text-indigo-600"></span><span class="cursor text-indigo-400">|</span><br>
+    <span class="text-gray-400 font-400">or find your next gig.</span>
+  </h1>
+
+  <p class="animate-fade-in-2 text-gray-500 text-lg mb-10 max-w-sm mx-auto leading-relaxed">
+    A clean, no-noise marketplace connecting clients with skilled freelancers — fast.
+  </p>
+
+  <div class="animate-fade-in-3 flex justify-center flex-wrap gap-3">
+    <a href="{% url 'marketplace:project_list' %}" class="btn-primary">Browse projects</a>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'accounts:register' %}" class="btn-ghost">Create account</a>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    const words = ['Design', 'Development', 'Marketing', 'Copywriting', 'Strategy', 'Video Editing', 'SEO'];
+    let wi = 0, ci = 0, deleting = false;
+    const el = document.getElementById('typeword');
+    const PAUSE_FULL = 1800, PAUSE_EMPTY = 400, TYPE_MS = 80, ERASE_MS = 45;
+
+    function tick() {
+      const word = words[wi];
+      if (!deleting) {
+        el.textContent = word.slice(0, ++ci);
+        if (ci === word.length) { deleting = true; setTimeout(tick, PAUSE_FULL); return; }
+      } else {
+        el.textContent = word.slice(0, --ci);
+        if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; setTimeout(tick, PAUSE_EMPTY); return; }
+      }
+      setTimeout(tick, deleting ? ERASE_MS : TYPE_MS);
+    }
+
+    setTimeout(tick, 700);
+  })();
+</script>
+{% endblock %}

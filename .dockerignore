@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Environment Variables (NEVER commit secrets!)
+.env
+.env.local
+.env.production
+
+# Database files
+db.sqlite3
+*.db
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Media and static (collected)
+/staticfiles/
+/media/
+
+# Logs
+*.log
+
+# Tooling caches
+.vexp/
+.claude/
+
+# Test + coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Docs and large assets not needed for image build
+*.md
+README.md
+docs/
+assets/
+fixtures/
+
+# Git metadata
+.git/
+.gitignore
+.gitattributes
+
+# CI
+.github/
