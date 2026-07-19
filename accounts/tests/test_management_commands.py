@@ -12,6 +12,7 @@ from marketplace.models import Application, Project
 User = get_user_model()
 
 
+@override_settings(DEBUG=True)
 class LoadDemoDataCommandTest(TestCase):
     """Verify the demo seeder is correct and idempotent."""
 
