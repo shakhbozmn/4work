@@ -6,8 +6,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
+from accounts.models import Skill
 from marketplace.forms import ApplicationForm, ProjectForm
-from marketplace.models import Application, Category, Project, Skill
+from marketplace.models import Application, Category, Project
 
 User = get_user_model()
 
