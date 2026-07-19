@@ -14,9 +14,7 @@ User = get_user_model()
 
 class ProjectModelPropertyTest(TestCase):
     def setUp(self):
-        self.client = User.objects.create_user(
-            username="client", email="c@example.com", password="pw", role="client"
-        )
+        self.client = User.objects.create_user(username="client", email="c@example.com", password="pw", role="client")
         self.category = Category.objects.create(name="Web")
 
     def _make(self, status="open", deadline=None):

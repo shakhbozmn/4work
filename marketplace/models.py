@@ -99,4 +99,3 @@ class Application(models.Model):
 
     def get_absolute_url(self):
         return reverse("marketplace:project_detail", kwargs={"pk": self.project_id})
-

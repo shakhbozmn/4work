@@ -68,8 +68,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if settings.DEBUG is False and not options["force"]:
             raise CommandError(
-                "Refusing to seed demo data while DEBUG=False. "
-                "Run with --force only if you really mean it."
+                "Refusing to seed demo data while DEBUG=False. " "Run with --force only if you really mean it."
             )
 
         self.stdout.write(self.style.SUCCESS("Loading demo data..."))

@@ -22,7 +22,9 @@ class HealthCheckViewTest(TestCase):
             response = HealthCheckView.as_view()(self._request())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "application/json")
-        self.assertEqual(response.content, b'{"status":"ok","service":"4work","components":{"database":"ok","cache":"ok"}}')
+        self.assertEqual(
+            response.content, b'{"status":"ok","service":"4work","components":{"database":"ok","cache":"ok"}}'
+        )
 
     def test_returns_503_when_db_fails(self):
         with patch.object(HealthCheckView, "_check_db", return_value=False), patch.object(

@@ -3,6 +3,7 @@
 import os
 
 from config.settings.development import *  # noqa: F401, F403
+from config.settings.development import BASE_DIR  # noqa: F401
 
 DATABASES = {
     "default": {
