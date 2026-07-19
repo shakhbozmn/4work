@@ -118,7 +118,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Demo user passwords set"))
 
     def _seed_admin(self) -> None:
-        from .models import Profile
+        from accounts.models import Profile
 
         admin, _ = User.objects.update_or_create(
             username=ADMIN_USERNAME,
