@@ -1,5 +1,6 @@
 """Tests for the /health/ endpoint."""
 
+import json
 from unittest.mock import patch
 
 from django.core.cache import cache
@@ -22,8 +23,10 @@ class HealthCheckViewTest(TestCase):
             response = HealthCheckView.as_view()(self._request())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "application/json")
+        body = json.loads(response.content)
         self.assertEqual(
-            response.content, b'{"status":"ok","service":"4work","components":{"database":"ok","cache":"ok"}}'
+            body,
+            {"status": "ok", "service": "4work", "components": {"database": "ok", "cache": "ok"}},
         )
 
     def test_returns_503_when_db_fails(self):
@@ -32,6 +35,9 @@ class HealthCheckViewTest(TestCase):
         ):
             response = HealthCheckView.as_view()(self._request())
         self.assertEqual(response.status_code, 503)
+        body = json.loads(response.content)
+        self.assertEqual(body["status"], "degraded")
+        self.assertEqual(body["components"]["database"], "error")
 
     def test_returns_503_when_cache_fails(self):
         with patch.object(HealthCheckView, "_check_db", return_value=True), patch.object(
@@ -39,6 +45,9 @@ class HealthCheckViewTest(TestCase):
         ):
             response = HealthCheckView.as_view()(self._request())
         self.assertEqual(response.status_code, 503)
+        body = json.loads(response.content)
+        self.assertEqual(body["status"], "degraded")
+        self.assertEqual(body["components"]["cache"], "error")
 
 
 class HealthProbeIntegrationTest(TestCase):

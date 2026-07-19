@@ -15,8 +15,8 @@ User = get_user_model()
 class LoadDemoDataCommandTest(TestCase):
     """Verify the demo seeder is correct and idempotent."""
 
-    def _run(self):
-        call_command("load_demo_data")
+    def _run(self, **kwargs):
+        call_command("load_demo_data", **kwargs)
 
     def test_first_load_seeds_expected_counts(self):
         self._run()
@@ -79,5 +79,5 @@ class LoadDemoDataCommandTest(TestCase):
 
     def test_force_flag_allows_run_when_debug_is_false(self):
         with override_settings(DEBUG=False):
-            self._run()
+            self._run(force=True)
             self.assertTrue(User.objects.filter(username="adminus").exists())
